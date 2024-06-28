@@ -1,0 +1,5 @@
+
+State Machine - |Project_top_module|Single_Cycle_Computer:my_computer|Controller:controller|state
+Name state.S_EXECUTE 
+state.S_IDLE 0 
+state.S_EXECUTE 1 

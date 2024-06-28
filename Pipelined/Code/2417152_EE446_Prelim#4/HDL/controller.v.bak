@@ -1,0 +1,33 @@
+module Controller(
+	input clk,
+	input [1:0] Op,
+	input [5:0] Funct,
+	input [3:0] Rd,
+	input [11:0] Src2,
+	input [3:0] Cond,
+	input CO, OVF, N, Z,
+	
+	output [1:0] ImmSrc, ShiftControl,
+	output [2:0] RegSrc,
+	output [3:0] ALUControl,
+	output [4:0] shamt,
+	output PCSrc, ALUSrc, CarryIN, RegWrite, MemWrite, MemtoReg
+);
+
+// Decode Stage ********************
+wire [1:0] FlagWrite, FlagWrite_raw;
+wire PCSrc_raw, RegWrite_raw, MemWrite_raw;
+Control_unit control_unit_sc(.Op(Op),.Funct(Funct),.Rd(Rd),.Src2(Src2),.PCSrc(PCSrc_raw),.RegWrite(RegWrite_raw),
+.MemWrite(MemWrite_raw),.ALUSrc(ALUSrc),.MemtoReg(MemtoReg),
+.ALUControl(ALUControl),.FlagWrite(FlagWrite_raw),.RegSrc(RegSrc),.ImmSrc(ImmSrc),
+.ShiftControl(ShiftControl),.shamt(shamt));
+
+
+
+Conditional_unit conditional_unit_sc(.clk(clk),.Cond(Cond),.ALUFlags({CO,OVF,N,Z}),.FlagWrite(FlagWrite),.CarryIn(CarryIN),.CondEx(CondEx));
+assign PCSrc = PCSrc_raw & CondEx;
+assign RegWrite = RegWrite_raw & CondEx;
+assign MemWrite = MemWrite_raw & CondEx;
+assign FlagWrite[0] = FlagWrite_raw[0] & CondEx;
+assign FlagWrite[1] = FlagWrite_raw[1] & CondEx;
+endmodule

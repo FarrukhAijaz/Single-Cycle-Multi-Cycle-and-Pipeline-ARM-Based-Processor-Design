@@ -1,0 +1,22 @@
+module Pipeline_Test
+(
+
+);
+
+Datapath My_DP
+(
+
+);
+
+controller My_Cntroller
+(
+
+
+);
+Hazard My_HazardUnit
+(
+
+
+);
+
+endmodule

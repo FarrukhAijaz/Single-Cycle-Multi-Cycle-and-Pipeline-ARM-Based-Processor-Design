@@ -1,0 +1,82 @@
+module Controller(
+    input clk,
+    input reset,
+    input [31:0] instruction,
+    output reg PCSrc,
+    output reg BX_ctrl,
+    output reg RegSrc,
+    output reg BL_ctrl,
+    output reg Move_ctrl,
+    output reg ALUSrc,
+    output reg MemtoReg,
+    output reg MemWrite,
+    output reg [3:0] ALUControl,
+    output reg RegWrite,
+    output reg [1:0] ImmSrc
+    );
+
+// Decode instruction
+wire [3:0] opcode = instruction[27:24];
+wire [3:0] cond = instruction[31:28];
+wire immediate = instruction[25];
+wire [1:0] op = instruction[27:26];
+
+always @(posedge clk or posedge reset) begin
+    if (reset) begin
+        // Reset all control signals
+        PCSrc <= 0;
+        BX_ctrl <= 0;
+        RegSrc <= 0;
+        BL_ctrl <= 0;
+        Move_ctrl <= 0;
+        ALUSrc <= 0;
+        MemtoReg <= 0;
+        MemWrite <= 0;
+        ALUControl <= 4'b0000; // AND operation by default
+        RegWrite <= 0;
+        ImmSrc <= 2'b00;
+    end else begin
+        // Default control signal values for most instructions
+        PCSrc <= 0;
+        BX_ctrl <= 0;
+        RegSrc <= 0;
+        BL_ctrl <= 0;
+        Move_ctrl <= 0;
+        ALUSrc <= immediate;
+        MemtoReg <= 0;
+        MemWrite <= 0;
+        RegWrite <= 1; // Most instructions write to a register
+        ImmSrc <= immediate ? 2'b10 : 2'b00; // Immediate value handling
+
+        case (op)
+            2'b00: begin // Data Processing
+                case (opcode)
+                    4'b0100: ALUControl <= 4'b0100; // ADD
+                    4'b0010: ALUControl <= 4'b0010; // SUB
+                    4'b0000: ALUControl <= 4'b0000; // AND
+                    4'b1100: ALUControl <= 4'b1100; // ORR
+                    4'b1010: begin // CMP
+                        ALUControl <= 4'b0010; // SUB for comparison
+                        RegWrite <= 0; // CMP does not write to a register
+                    end
+                    4'b1101: begin // MOV
+                        ALUControl <= 4'b1101; // Special case for MOV
+                        Move_ctrl <= 1;
+                    end
+                endcase
+            end
+            2'b01: begin // Memory Access
+                ALUSrc <= 1;
+                MemtoReg <= 1;
+                MemWrite <= !instruction[20]; // L bit determines load or store
+            end
+            2'b10: begin // Branch
+                PCSrc <= 1;
+                RegWrite <= 0; // Branch does not write to a register
+                // Additional logic for BL, B, and conditional branches can be added
+            end
+        endcase
+    end
+end
+
+endmodule

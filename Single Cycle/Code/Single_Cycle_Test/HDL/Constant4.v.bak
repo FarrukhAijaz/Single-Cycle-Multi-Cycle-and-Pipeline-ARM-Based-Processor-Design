@@ -1,0 +1,9 @@
+module Constant4 (
+    output reg [31:0] output
+);
+
+initial begin
+    output = 32'b00000000000000000000000000000100; // Assigning the constant value of 4 to the output
+end
+
+endmodule

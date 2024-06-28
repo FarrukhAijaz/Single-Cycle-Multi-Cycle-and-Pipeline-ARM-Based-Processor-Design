@@ -1,0 +1,8 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1713755129" />
+    <testcase name="Pipeline_test" classname="Pipeline_Test" file="C:\Users\farru\OneDrive\Desktop\Pipeline\Test\Pipeline_Test.py" lineno="218" time="0.07619667053222656" sim_time_ns="57000" ratio_time="748064.1818318355">
+      <failure message="Test failed with RANDOM_SEED=1713755129" />
+    </testcase>
+  </testsuite>
+</testsuites>
