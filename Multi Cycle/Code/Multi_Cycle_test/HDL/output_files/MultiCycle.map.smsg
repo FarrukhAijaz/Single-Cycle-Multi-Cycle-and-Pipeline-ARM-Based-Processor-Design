@@ -1,2 +1,0 @@
-Info (10281): Verilog HDL Declaration information at Controller.v(4): object "MemWrite" differs only in case from object "MEMWRITE" in the same scope
-Info (10281): Verilog HDL Declaration information at Controller.v(30): object "Branch" differs only in case from object "BRANCH" in the same scope
